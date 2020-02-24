@@ -98,11 +98,18 @@ void dijkstra_parallel(int n_node, int (*matrix)[n_node], int result[]) {
 
     while (i < n_node) {
         for (int j = 0; j < n_node; j++) {
-            if (is_visited(n_node, visited, j) == 0 && matrix[current_idx_pos][j] != -1) {
+            if (is_visited(n_node, visited, j) == 0) {
                 if (j != current_idx_pos) {
-                    if (result[j] == -1 || path_cost + matrix[current_idx_pos][j] < result[j]) {
-                        result[j] = path_cost + matrix[current_idx_pos][j];
-                        if (result[j] < global_min) {
+                    if (matrix[current_idx_pos][j] != -1) {
+                        if (result[j] == -1 || path_cost + matrix[current_idx_pos][j] < result[j]) {
+                            result[j] = path_cost + matrix[current_idx_pos][j];
+                            if (result[j] < global_min) {
+                                global_min = result[j];
+                                next_idx_pos = j;
+                            }
+                        }
+                    } else {
+                        if (result[j] != -1 && result[j] < global_min) {
                             global_min = result[j];
                             next_idx_pos = j;
                         }
