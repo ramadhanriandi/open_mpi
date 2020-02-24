@@ -22,12 +22,14 @@ void init_graph(int n_node, int (*matrix)[n_node], int seed) {
         for (int j = 0; j < n_node; j++) {
             if (i == j) {
                 matrix[i][j] = 0;
-            } else {
+            } else if (i < j) {
                 int parity = rand() % seed;
                 if (parity % 2 == 0) {
-                    matrix[i][j] = 0;
+                    matrix[i][j] = -1;
+                    matrix[j][i] = -1;
                 } else {
-                    matrix[i][j] = rand() % seed;
+                    matrix[i][j] = parity;
+                    matrix[j][i] = parity;
                 }
             }
         }
