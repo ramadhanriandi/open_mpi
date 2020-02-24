@@ -20,7 +20,16 @@ int main(int argc, char** argv) {
 void init_graph(int n_node, int (*matrix)[n_node], int seed) {
     for (int i = 0; i < n_node; i++) {
         for (int j = 0; j < n_node; j++) {
-            matrix[i][j] = rand() % seed;
+            if (i == j) {
+                matrix[i][j] = 0;
+            } else {
+                int parity = rand() % seed;
+                if (parity % 2 == 0) {
+                    matrix[i][j] = 0;
+                } else {
+                    matrix[i][j] = rand() % seed;
+                }
+            }
         }
     }
 }
