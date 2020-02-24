@@ -72,6 +72,20 @@ int is_visited(int n_node, int visited[], int checked_value) {
     return 0;
 }
 
+int find_alternative(int n_node, int visited[], int result[], int current_idx) {
+    int min_alternative = 999;
+    int choosen_idx = -1;
+    for (int i = 0; i < n_node; i++) {
+        if (is_visited(n_node, visited, i) == 0 && result[i] != -1) {
+            if (min_alternative > result[i]) {
+                min_alternative = result[i];
+                choosen_idx = i;
+            }
+        }
+    }
+    return choosen_idx != -1 ? choosen_idx : current_idx;
+}
+
 void dijkstra_parallel(int n_node, int (*matrix)[n_node], int result[]) {
     int visited[n_node];
     int global_min = 999;
@@ -86,17 +100,12 @@ void dijkstra_parallel(int n_node, int (*matrix)[n_node], int result[]) {
         for (int j = 0; j < n_node; j++) {
             if (is_visited(n_node, visited, j) == 0 && matrix[current_idx_pos][j] != -1) {
                 if (j != current_idx_pos) {
-                    if (result[j] == -1) {  
+                    if (result[j] == -1 || path_cost + matrix[current_idx_pos][j] < result[j]) {
                         result[j] = path_cost + matrix[current_idx_pos][j];
-                    } else {
-                        if (path_cost + matrix[current_idx_pos][j] < result[j]) {
-                            result[j] = path_cost + matrix[current_idx_pos][j];
+                        if (result[j] < global_min) {
+                            global_min = result[j];
+                            next_idx_pos = j;
                         }
-                    }
-
-                    if (result[j] < global_min) {
-                        global_min = result[j];
-                        next_idx_pos = j;
                     }
                 } else {
                     if (result[j] == -1) {
@@ -106,9 +115,21 @@ void dijkstra_parallel(int n_node, int (*matrix)[n_node], int result[]) {
                 
             }
         }
+        // print_solution(n_node, result);
         visited[i] = current_idx_pos;
-        current_idx_pos = next_idx_pos;
-        path_cost = global_min;
+        print_solution(n_node, visited);
+        if (current_idx_pos != next_idx_pos) {
+            current_idx_pos = next_idx_pos;
+            path_cost = global_min;
+            printf("%d\n", next_idx_pos);
+            printf("tanpa alternatif\n");
+        } else {
+            current_idx_pos = find_alternative(n_node, visited, result, current_idx_pos);
+            next_idx_pos = current_idx_pos;
+            path_cost = result[current_idx_pos];
+            printf("%d\n", next_idx_pos);
+            printf("dengan alternatif\n");
+        }
         global_min = 999;
         i++;
     }
