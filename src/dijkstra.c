@@ -42,3 +42,9 @@ void print_matrix(int n_node, int (*matrix)[n_node]) {
         printf("\n");
     }
 }
+
+void print_solution(int result[], int n_node) {
+    printf("Vertex \t\t Distance from Source\n"); 
+    for (int i = 0; i < n_node; i++) 
+        printf("%d \t\t %d\n", i, result[i]);
+}
