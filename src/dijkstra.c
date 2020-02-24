@@ -9,10 +9,18 @@ int main(int argc, char** argv) {
     printf("Enter the number of nodes : ");
     scanf("%d", &n_node);
 
+    int result[n_node];
     int matrix_distance[n_node][n_node];
 
     init_graph(n_node, matrix_distance, seed);
+
     print_matrix(n_node, matrix_distance);
+
+    fill_array(n_node, result, -1);
+
+    dijkstra_parallel(n_node, matrix_distance, result);
+
+    print_solution(n_node, result);
 
     return 0;
 }
@@ -45,7 +53,68 @@ void print_matrix(int n_node, int (*matrix)[n_node]) {
     }
 }
 
-void print_solution(int result[], int n_node) {
+void fill_array(int n_node, int array[], int value) {
+    for (int i = 0; i < n_node; i++) {
+        array[i] = value;
+    }
+}
+
+int is_visited(int n_node, int visited[], int checked_value) {
+    int i = 0;
+
+    while (i < n_node) {
+        if (visited[i] == checked_value) {
+            return 1;
+        }
+        i++;
+    }
+
+    return 0;
+}
+
+void dijkstra_parallel(int n_node, int (*matrix)[n_node], int result[]) {
+    int visited[n_node];
+    int global_min = 999;
+    int path_cost = 0;
+    int next_idx_pos = 0;
+    int current_idx_pos = 0;
+    int i = 0; 
+
+    fill_array(n_node, visited, -1);
+
+    while (i < n_node) {
+        for (int j = 0; j < n_node; j++) {
+            if (is_visited(n_node, visited, j) == 0 && matrix[current_idx_pos][j] != -1) {
+                if (j != current_idx_pos) {
+                    if (result[j] == -1) {  
+                        result[j] = path_cost + matrix[current_idx_pos][j];
+                    } else {
+                        if (path_cost + matrix[current_idx_pos][j] < result[j]) {
+                            result[j] = path_cost + matrix[current_idx_pos][j];
+                        }
+                    }
+
+                    if (result[j] < global_min) {
+                        global_min = result[j];
+                        next_idx_pos = j;
+                    }
+                } else {
+                    if (result[j] == -1) {
+                        result[j] = 0;
+                    }
+                }
+                
+            }
+        }
+        visited[i] = current_idx_pos;
+        current_idx_pos = next_idx_pos;
+        path_cost = global_min;
+        global_min = 999;
+        i++;
+    }
+}
+
+void print_solution(int n_node, int result[]) {
     printf("Vertex \t\t Distance from Source\n"); 
     for (int i = 0; i < n_node; i++) 
         printf("%d \t\t %d\n", i, result[i]);
