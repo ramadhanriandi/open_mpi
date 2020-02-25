@@ -57,18 +57,23 @@ int main(int argc, char** argv) {
 
     print_matrix(n_node, matrix_distance);
 
+    int k = rank;
     // THIS PROCESS MUST BE MADE TO BE PARALLEL WITH OPENMPI
-    for (int i = 0; i < n_node; i++) {
-        fill_array(n_node, result, -1);
-        dijkstra(n_node, matrix_distance, i, result);
-        print_solution(n_node, result);
+    while (k < n_node) {
+      fill_array(n_node, result, -1);
+      dijkstra(n_node, &matrix_distance, k, result);
+      print_solution(n_node, result);
+      MPI_Bcast(&matrix_distance, 1, MPI_INT, rank, MPI_COMM_WORLD);
+      k += numtasks;
     }
 
-    dijkstra_parallel(n_node, matrix_distance, result);
-
-    print_solution(n_node, result);
-
     MPI_Finalize();
+
+    // PRINT RESULT
+    if (rank == 0) {
+      printf("\n%s\n", "Final result:");
+      print_solution(n_node, matrix_distance);
+    }
 
     return 0;
 }
