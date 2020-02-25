@@ -37,6 +37,8 @@ Selain itu kita dapat menggunakan fitur MPI yang lebih cocok seperti Scatter dan
 Kita menggunakan 4 thread karena disesuaikan dengan logical processor serta spesifikasi laptop atau server yang digunakan.
 
 ### Pengukuran Kinerja untuk Tiap Kasus Uji Dibandingkan dengan Dijkstra Algorithm Serial
+https://gitlab.informatika.org/reyhankim/openmpi/-/raw/master/screenshots/serial_100.png
+https://gitlab.informatika.org/reyhankim/openmpi/-/blob/master/screenshots/parallel_100.png
 
 ### Analisis Perbandingan Kinerja Serial dan Parallel
 Pada umumnya, kinerja program parallel akan menghasilkan kinerja yang lebih baik daripada program serial. Namun pada percobaan tugas ini, hasil yang didapat dari program parallel tidak lebih baik daripada program serial yang telah dibuat.
