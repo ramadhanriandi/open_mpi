@@ -38,6 +38,7 @@ Kita menggunakan 4 thread karena disesuaikan dengan logical processor serta spes
 
 ### Pengukuran Kinerja untuk Tiap Kasus Uji Dibandingkan dengan Dijkstra Algorithm Serial
 https://gitlab.informatika.org/reyhankim/openmpi/-/raw/master/screenshots/serial_100.png
+
 https://gitlab.informatika.org/reyhankim/openmpi/-/blob/master/screenshots/parallel_100.png
 
 ### Analisis Perbandingan Kinerja Serial dan Parallel
