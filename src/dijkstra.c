@@ -90,6 +90,7 @@ int main(int argc, char** argv) {
       printf("\n%s\n", "Final result:");
       print_matrix(n_node, final_matrix_distance);
       printf("\n%s%f%s\n", "Time elapsed: ", time_taken, " ms");
+      print_matrix_to_file(n_node, final_matrix_distance);
     }
 
     return 0;
@@ -228,4 +229,20 @@ void print_solution(int n_node, int result[]) {
     printf("Vertex \t\t Distance from Source\n"); 
     for (int i = 0; i < n_node; i++) 
         printf("%d \t\t %d\n", i, result[i]);
+}
+
+void print_matrix_to_file(int n_node, int (*matrix)[n_node]) {
+    FILE * fp;
+    /* open the file for writing*/
+    fp = fopen ("output.txt","w");
+
+    for (int i = 0; i < n_node; i++) {
+      for (int j = 0; j < n_node; j++) {
+        fprintf(fp, "%d ", matrix[i][j]);
+      }
+      fprintf(fp, "\n");
+    }
+
+    /* close the file*/
+    fclose (fp);
 }
