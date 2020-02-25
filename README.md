@@ -29,9 +29,12 @@ Untuk mendapatkan matriks yang berisi jarak terpendek dari setiap node ke semua 
 Kita menggunakan MPI Broadcast untuk mengirimkan data yang sama yaitu matriks yang berisi jarak terpendek dari setiap ke semua node lainnya. Matriks ini akan dikirimkan ke seluruh proses yang ada. Broadcast menggunakan jalur komunikasi berbentuk pohon.
 
 ### Analisis Solusi yang Diberikan
-
+Berdasarkan solusi yang digunakan, kita menghasilkan kinerja yang lebih ringan dengan membagi proses untuk ditangani oleh beberapa thread.
+Untuk menghasilkan solusi yang lebih baik, dapat dilakukan dengan cara mengoptimasi algoritma Dijkstra yang telah dibuat.
+Selain itu kita dapat menggunakan fitur MPI yang lebih cocok seperti Scatter dan Gather untuk melakukan penyebaran dan pengumpulan data sehingga kinerja yang dihasilkan lebih baik.
 
 ### Jumlah Thread yang Digunakan
+Kita menggunakan 4 thread karena disesuaikan dengan logical processor serta spesifikasi laptop atau server yang digunakan.
 
 ### Pengukuran Kinerja untuk Tiap Kasus Uji Dibandingkan dengan Dijkstra Algorithm Serial
 
