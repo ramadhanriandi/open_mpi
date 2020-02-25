@@ -16,11 +16,12 @@ int main(int argc, char** argv) {
 
     print_matrix(n_node, matrix_distance);
 
-    fill_array(n_node, result, -1);
-
-    dijkstra_parallel(n_node, matrix_distance, result);
-
-    print_solution(n_node, result);
+    // this process must be made to be parallel
+    for (int i = 0; i < n_node; i++) {
+        fill_array(n_node, result, -1);
+        dijkstra(n_node, matrix_distance, i, result);
+        print_solution(n_node, result);
+    }
 
     return 0;
 }
@@ -86,12 +87,12 @@ int find_alternative(int n_node, int visited[], int result[], int current_idx) {
     return choosen_idx != -1 ? choosen_idx : current_idx;
 }
 
-void dijkstra_parallel(int n_node, int (*matrix)[n_node], int result[]) {
+void dijkstra(int n_node, int (*matrix)[n_node], int source, int result[]) {
     int visited[n_node];
     int global_min = 999;
     int path_cost = 0;
     int next_idx_pos = 0;
-    int current_idx_pos = 0;
+    int current_idx_pos = source;
     int i = 0; 
 
     fill_array(n_node, visited, -1);
@@ -122,20 +123,16 @@ void dijkstra_parallel(int n_node, int (*matrix)[n_node], int result[]) {
                 
             }
         }
-        // print_solution(n_node, result);
+
         visited[i] = current_idx_pos;
-        print_solution(n_node, visited);
+
         if (current_idx_pos != next_idx_pos) {
             current_idx_pos = next_idx_pos;
             path_cost = global_min;
-            printf("%d\n", next_idx_pos);
-            printf("tanpa alternatif\n");
         } else {
             current_idx_pos = find_alternative(n_node, visited, result, current_idx_pos);
             next_idx_pos = current_idx_pos;
             path_cost = result[current_idx_pos];
-            printf("%d\n", next_idx_pos);
-            printf("dengan alternatif\n");
         }
         global_min = 999;
         i++;
