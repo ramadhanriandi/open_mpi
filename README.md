@@ -38,4 +38,11 @@ Kita menggunakan 4 thread karena disesuaikan dengan logical processor serta spes
 
 ### Pengukuran Kinerja untuk Tiap Kasus Uji Dibandingkan dengan Dijkstra Algorithm Serial
 
-### Analisis Perbandingan Kinerja Serial dan Paralel
+### Analisis Perbandingan Kinerja Serial dan Parallel
+Pada umumnya, kinerja program parallel akan menghasilkan kinerja yang lebih baik daripada program serial. Namun pada percobaan tugas ini, hasil yang didapat dari program parallel tidak lebih baik daripada program serial yang telah dibuat.
+Kedua program menggunakan algoritma dijkstra yang sama namun perbedaaannya terletak pada bagaimana terdapat beberapa proses di program parallel dalam mengelola data.
+Hasil yang lebih buruk ini dapat disebabkan oleh kesalahan algoritma MPI atau kurang cocoknya fitur MPI yang digunakan dalam pembuatan proses parallel.
+
+Hasil contoh pengujian terhadap waktu elapsed:
+Parallel 100 : 222.552 ms
+Serial 100 : 185.857 ms
