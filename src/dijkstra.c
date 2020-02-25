@@ -4,6 +4,40 @@
 
 int main(int argc, char** argv) {
     int numtasks, rank, dest, source, rc, count, tag=1;
+    // if (argc != 3) {
+    //     fprintf(stderr, "Usage: compare_bcast num_elements num_trials\n");
+    //     exit(1);
+    // }
+    // int num_elements = atoi(argv[1]);
+    // int num_trials = atoi(argv[2]);
+    // MPI_Init(NULL, NULL);
+    // int world_rank;
+    // MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
+    // double total_mpi_bcast_time = 0.0;
+    // int i;
+    // int matrix_distance[8][8];
+    // init_graph(8, matrix_distance, 80);
+    // // int* data = (int*)malloc(sizeof(int) * num_elements);
+    // // assert(data != NULL);
+    // for (i = 0; i < num_trials; i++) {
+    //     // Time MPI_Bcast
+    //     MPI_Barrier(MPI_COMM_WORLD);
+    //     total_mpi_bcast_time -= MPI_Wtime();
+    //     MPI_Bcast(matrix_distance, num_elements, MPI_INT, 0, MPI_COMM_WORLD);
+    //     if (world_rank != 0) {
+    //         print_matrix(8, matrix_distance);
+    //     }
+    //     MPI_Barrier(MPI_COMM_WORLD);
+    //     total_mpi_bcast_time += MPI_Wtime();
+    // }
+    // // Print off timing information
+    // if (world_rank == 0) {
+    //     // printf("Data size = %d, Trials = %d\n", num_elements * (int)sizeof(int),
+    //     // num_trials);
+    //     printf("Avg MPI_Bcast time = %lf\n", total_mpi_bcast_time / num_trials);
+    // }
+    // MPI_Finalize();
+
     int n_node;
     int seed = 80;
 
@@ -23,7 +57,12 @@ int main(int argc, char** argv) {
 
     print_matrix(n_node, matrix_distance);
 
-    fill_array(n_node, result, -1);
+    // THIS PROCESS MUST BE MADE TO BE PARALLEL WITH OPENMPI
+    for (int i = 0; i < n_node; i++) {
+        fill_array(n_node, result, -1);
+        dijkstra(n_node, matrix_distance, i, result);
+        print_solution(n_node, result);
+    }
 
     dijkstra_parallel(n_node, matrix_distance, result);
 
@@ -107,12 +146,12 @@ int find_alternative(int n_node, int visited[], int result[], int current_idx) {
     return choosen_idx != -1 ? choosen_idx : current_idx;
 }
 
-void dijkstra_parallel(int n_node, int (*matrix)[n_node], int result[]) {
+void dijkstra(int n_node, int (*matrix)[n_node], int source, int result[]) {
     int visited[n_node];
     int global_min = 999;
     int path_cost = 0;
     int next_idx_pos = 0;
-    int current_idx_pos = 0;
+    int current_idx_pos = source;
     int i = 0; 
 
     fill_array(n_node, visited, -1);
@@ -143,7 +182,7 @@ void dijkstra_parallel(int n_node, int (*matrix)[n_node], int result[]) {
                 
             }
         }
-        // print_solution(n_node, result);
+
         visited[i] = current_idx_pos;
 //        print_solution(n_node, visited);
         if (current_idx_pos != next_idx_pos) {
