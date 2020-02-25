@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include "mpi.h"
+// #include "mpi.h"
 
 int main(int argc, char** argv) {
     int numtasks, rank, dest, source, rc, count, tag=1;
@@ -12,30 +12,23 @@ int main(int argc, char** argv) {
 
     int name_len;
 
-    MPI_Status Stat;
-    MPI_Init(&argc, &argv);
-    MPI_Comm_size(MPI_COMM_WORLD, &numtasks);
-    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-
-    n_node = read_n(rank, MPI_COMM_WORLD);
+    scanf("%d", &n_node);
 
     int result[n_node];
     int matrix_distance[n_node][n_node];
 
     // final distance matrix which will be outputted
     int final_matrix_distance[n_node][n_node];
-    if (rank == 0) {
-        for (int i = 0; i < n_node; i++) {
-            fill_array(n_node, final_matrix_distance[i], -1);
-        };
+    for (int i = 0; i < n_node; i++) {
+        fill_array(n_node, final_matrix_distance[i], -1);
+    };
 
-        init_graph(n_node, matrix_distance, seed);
+    init_graph(n_node, matrix_distance, seed);
 
-        print_matrix(n_node, matrix_distance);
-    }
+    print_matrix(n_node, matrix_distance);
 
     t = clock();
-    int k = rank;
+    int k = 0;
     // THIS PROCESS MUST BE MADE TO BE PARALLEL WITH OPENMPI
     while (k < n_node) {
         fill_array(n_node, result, -1);
@@ -43,15 +36,12 @@ int main(int argc, char** argv) {
         for (int i = 0; i < n_node; i++) {
             final_matrix_distance[k][i] = result[i];
         }
-        MPI_Bcast(&final_matrix_distance, 1, MPI_INT, rank, MPI_COMM_WORLD);
 
     //   k += numtasks;
         k++;
     }
     t = clock() - t;
     double time_taken = ((double)t)/(CLOCKS_PER_SEC/1000);
-
-    MPI_Finalize();
 
     // PRINT RESULT
     if (rank == 0) {
@@ -62,18 +52,6 @@ int main(int argc, char** argv) {
     }
 
     return 0;
-}
-
-int read_n(int rank, MPI_Comm comm) {
-  int n;
-
-  if (rank == 0) {
-    // printf("Enter the number of nodes : ");
-    scanf("%d", &n);
-  }
-
-  MPI_Bcast(&n, 1, MPI_INT, 0, comm);
-  return n;
 }
 
 void init_graph(int n_node, int (*matrix)[n_node], int seed) {
