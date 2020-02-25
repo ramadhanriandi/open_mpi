@@ -44,5 +44,7 @@ Kedua program menggunakan algoritma dijkstra yang sama namun perbedaaannya terle
 Hasil yang lebih buruk ini dapat disebabkan oleh kesalahan algoritma MPI atau kurang cocoknya fitur MPI yang digunakan dalam pembuatan proses parallel.
 
 Hasil contoh pengujian terhadap waktu elapsed:
+
 Parallel 100 : 222.552 ms
+
 Serial 100 : 185.857 ms
