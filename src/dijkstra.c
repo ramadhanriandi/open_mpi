@@ -1,13 +1,20 @@
 #include <stdio.h>
 #include <stdlib.h>
-// #include <mpi.h>
+#include "mpi.h"
 
 int main(int argc, char** argv) {
+    int numtasks, rank, dest, source, rc, count, tag=1;
     int n_node;
     int seed = 80;
 
-    printf("Enter the number of nodes : ");
-    scanf("%d", &n_node);
+    int name_len;
+
+    MPI_Status Stat;
+    MPI_Init(&argc, &argv);
+    MPI_Comm_size(MPI_COMM_WORLD, &numtasks);
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+
+    n_node = read_n(rank, MPI_COMM_WORLD);
 
     int result[n_node];
     int matrix_distance[n_node][n_node];
@@ -22,7 +29,21 @@ int main(int argc, char** argv) {
 
     print_solution(n_node, result);
 
+    MPI_Finalize();
+
     return 0;
+}
+
+int read_n(int rank, MPI_Comm comm) {
+  int n;
+
+  if (rank == 0) {
+    printf("Enter the number of nodes : ");
+    scanf("%d", &n);
+  }
+
+  MPI_Bcast(&n, 1, MPI_INT, 0, comm);
+  return n;
 }
 
 void init_graph(int n_node, int (*matrix)[n_node], int seed) {
@@ -124,18 +145,18 @@ void dijkstra_parallel(int n_node, int (*matrix)[n_node], int result[]) {
         }
         // print_solution(n_node, result);
         visited[i] = current_idx_pos;
-        print_solution(n_node, visited);
+//        print_solution(n_node, visited);
         if (current_idx_pos != next_idx_pos) {
             current_idx_pos = next_idx_pos;
             path_cost = global_min;
-            printf("%d\n", next_idx_pos);
-            printf("tanpa alternatif\n");
+//            printf("%d\n", next_idx_pos);
+//            printf("tanpa alternatif\n");
         } else {
             current_idx_pos = find_alternative(n_node, visited, result, current_idx_pos);
             next_idx_pos = current_idx_pos;
             path_cost = result[current_idx_pos];
-            printf("%d\n", next_idx_pos);
-            printf("dengan alternatif\n");
+//            printf("%d\n", next_idx_pos);
+//            printf("dengan alternatif\n");
         }
         global_min = 999;
         i++;
