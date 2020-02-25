@@ -1,9 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include "mpi.h"
 
 int main(int argc, char** argv) {
     int numtasks, rank, dest, source, rc, count, tag=1;
+    clock_t t;
     // if (argc != 3) {
     //     fprintf(stderr, "Usage: compare_bcast num_elements num_trials\n");
     //     exit(1);
@@ -53,26 +55,41 @@ int main(int argc, char** argv) {
     int result[n_node];
     int matrix_distance[n_node][n_node];
 
+    // final distance matrix which will be outputted
+    int final_matrix_distance[n_node][n_node];
+    for (int i = 0; i < n_node; i++) {
+      fill_array(n_node, final_matrix_distance[i], -1);
+    };
+
     init_graph(n_node, matrix_distance, seed);
 
     print_matrix(n_node, matrix_distance);
 
+    t = clock();
     int k = rank;
     // THIS PROCESS MUST BE MADE TO BE PARALLEL WITH OPENMPI
     while (k < n_node) {
       fill_array(n_node, result, -1);
-      dijkstra(n_node, &matrix_distance, k, result);
+      dijkstra(n_node, matrix_distance, k, result);
       print_solution(n_node, result);
-      MPI_Bcast(&matrix_distance, 1, MPI_INT, rank, MPI_COMM_WORLD);
+      printf("%d\n", k);
+      for (int i = 0; i < n_node; i++) {
+        final_matrix_distance[k][i] = result[i];
+      }
+      MPI_Bcast(&final_matrix_distance, 1, MPI_INT, rank, MPI_COMM_WORLD);
+
       k += numtasks;
     }
+    t = clock() - t;
+    double time_taken = ((double)t)/(CLOCKS_PER_SEC/1000);
 
     MPI_Finalize();
 
     // PRINT RESULT
     if (rank == 0) {
       printf("\n%s\n", "Final result:");
-      print_solution(n_node, matrix_distance);
+      print_matrix(n_node, final_matrix_distance);
+      printf("\n%s%f%s\n", "Time elapsed: ", time_taken, " ms");
     }
 
     return 0;
