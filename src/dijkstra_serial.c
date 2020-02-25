@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-// #include "mpi.h"
 
 int main(int argc, char** argv) {
     int numtasks, rank, dest, source, rc, count, tag=1;
@@ -29,15 +28,13 @@ int main(int argc, char** argv) {
 
     t = clock();
     int k = 0;
-    // THIS PROCESS MUST BE MADE TO BE PARALLEL WITH OPENMPI
+
     while (k < n_node) {
         fill_array(n_node, result, -1);
         dijkstra(n_node, matrix_distance, k, result);
         for (int i = 0; i < n_node; i++) {
             final_matrix_distance[k][i] = result[i];
         }
-
-    //   k += numtasks;
         k++;
     }
     t = clock() - t;
